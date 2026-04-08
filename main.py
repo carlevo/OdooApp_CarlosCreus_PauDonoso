@@ -12,29 +12,27 @@ app.config.from_object(StringsConfiguracio)
 def home():
     return render_template('login.html')
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    email = request.form['email']
-    password = request.form['password']
-    # Aquí iría la lógica de autenticación
-    # Por ahora, redirigir a una página de éxito o algo
-    flash('Login exitoso', 'success')
-    return redirect(url_for('home'))
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        # Aquí iría la lógica de autenticación
+        flash('Login exitoso', 'success')
+        return redirect(url_for('home'))
+    return render_template('login.html')
 
-@app.route('/registro')
+@app.route('/registro', methods=['GET', 'POST'])
 def registro():
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        email = request.form['email']
+        password = request.form['password']
+        password2 = request.form['password2']
+        # Aquí iría la lógica de registro
+        flash('Registro exitoso', 'success')
+        return redirect(url_for('login'))
     return render_template('registro.html')
-
-@app.route('/registro', methods=['POST'])
-def registrar():
-    nombre = request.form['nombre']
-    email = request.form['email']
-    password = request.form['password']
-    confirm_password = request.form['confirm_password']
-    # Aquí iría la lógica de registro
-    # Por ahora, redirigir al login
-    flash('Registro exitoso', 'success')
-    return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
