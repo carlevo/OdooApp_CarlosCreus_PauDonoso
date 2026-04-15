@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from strings_configuracio import StringsConfiguracio
 from models import db
 from models.usuari import Usuari
+from models.producto import Producto
 
 app = Flask(__name__, template_folder='templates')
 app.config.from_object(StringsConfiguracio)
@@ -21,9 +22,19 @@ login_manager.login_message_category = 'warning'
 def load_user(user_id):
     return db.session.get(Usuari, int(user_id))
 
-# Crear las tablas si no existen
+# Crear las tablas si no existen y sembrar productos iniciales
 with app.app_context():
     db.create_all()
+    if Producto.query.count() == 0:
+        productos_iniciales = [
+            Producto(nombre="[E-COM09] Large Desk", ubicacion="WH/Stock", en_stock=1.0, prevision=-4.0, a_pedir=4.0),
+            Producto(nombre="[FURN_9001] Flipover", ubicacion="WH/Stock", en_stock=5.0, prevision=-6.0, a_pedir=6.0),
+            Producto(nombre="[FURN_9666] Table", ubicacion="WH/Stock", en_stock=2.0, prevision=-1.0, a_pedir=1.0),
+            Producto(nombre="[FURN_7777] Office Chair", ubicacion="WH/Stock/Assemb...", en_stock=4.0, prevision=4.0, a_pedir=6.0),
+            Producto(nombre="[FURN_8888] Office Lamp", ubicacion="WH/Stock/Assemb...", en_stock=8.0, prevision=0.0, a_pedir=2.0),
+        ]
+        db.session.add_all(productos_iniciales)
+        db.session.commit()
 
 
 @app.route('/')
@@ -99,14 +110,40 @@ def homescreen():
 @app.route('/aplicacion')
 @login_required
 def aplicacion():
-    inventory_items = [
-        {"selected": True, "product": "[E-COM09] Large Desk", "location": "WH/Stock", "on_hand": "1.00", "forecast": "-4.00", "route": "Order Once", "min": "0.00", "max": "0.00", "to_order": "4.00"},
-        {"selected": True, "product": "[FURN_9001] Flipover", "location": "WH/Stock", "on_hand": "5.00", "forecast": "-6.00", "route": "Order Once", "min": "0.00", "max": "0.00", "to_order": "6.00"},
-        {"selected": False, "product": "[FURN_9666] Table", "location": "WH/Stock", "on_hand": "2.00", "forecast": "-1.00", "route": "Order Once", "min": "0.00", "max": "0.00", "to_order": "1.00"},
-        {"selected": False, "product": "[FURN_7777] Office Chair", "location": "WH/Stock/Assemb...", "on_hand": "4.00", "forecast": "4.00", "route": "Buy", "min": "5.00", "max": "10.00", "to_order": "6.00"},
-        {"selected": True, "product": "[FURN_8888] Office Lamp", "location": "WH/Stock/Assemb...", "on_hand": "8.00", "forecast": "0.00", "route": "Order Once", "min": "10.00", "max": "10.00", "to_order": "2.00"}
-    ]
-    return render_template('aplicacion.html', inventory_items=inventory_items)
+    productos = Producto.query.all()
+    return render_template('aplicacion.html', inventory_items=productos)
+
+
+@app.route('/aplicacion/añadir', methods=['POST'])
+@login_required
+def añadir_producto():
+    nombre = request.form.get('nombre', '').strip()
+    ubicacion = request.form.get('ubicacion', 'WH/Stock').strip()
+    en_stock = float(request.form.get('en_stock', 0))
+    prevision = float(request.form.get('prevision', 0))
+    a_pedir = float(request.form.get('a_pedir', 0))
+
+    if not nombre:
+        flash('El nombre del producto es obligatorio.', 'danger')
+        return redirect(url_for('aplicacion'))
+
+    producto = Producto(nombre=nombre, ubicacion=ubicacion, en_stock=en_stock,
+                        prevision=prevision, a_pedir=a_pedir)
+    db.session.add(producto)
+    db.session.commit()
+    flash(f'Producto "{nombre}" añadido correctamente.', 'success')
+    return redirect(url_for('aplicacion'))
+
+
+@app.route('/aplicacion/eliminar/<int:producto_id>', methods=['POST'])
+@login_required
+def eliminar_producto(producto_id):
+    producto = db.session.get(Producto, producto_id)
+    if producto:
+        db.session.delete(producto)
+        db.session.commit()
+        flash(f'Producto "{producto.nombre}" eliminado.', 'info')
+    return redirect(url_for('aplicacion'))
 
 
 if __name__ == '__main__':

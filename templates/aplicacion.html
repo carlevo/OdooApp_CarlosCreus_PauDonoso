@@ -15,30 +15,54 @@
               &#8592;
             </a>
             <h1 class="display-5 fw-bold mb-0">Odoo Inventario</h1>
+            <button type="button" class="btn ms-auto px-4 fw-semibold"
+              style="background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); color: #fff; border-radius: 8px;"
+              data-bs-toggle="modal" data-bs-target="#modalAñadirProducto">
+              + Añadir producto
+            </button>
           </div>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
 
           <div class="table-responsive rounded-4 overflow-hidden"
             style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);">
             <table class="table table-borderless mb-0 align-middle text-white">
               <thead>
                 <tr class="text-white-75 small">
-                  <th scope="col"><input type="checkbox"></th>
                   <th scope="col">Product</th>
                   <th scope="col">Location</th>
                   <th scope="col">On Hand</th>
                   <th scope="col">Forecast</th>
                   <th scope="col">To Order</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
                 {% for item in inventory_items %}
                 <tr style="border-top: 1px solid rgba(255,255,255,0.10);">
-                  <td><input type="checkbox" {% if item.selected %}checked{% endif %}></td>
-                  <td>{{ item.product }}</td>
-                  <td>{{ item.location }}</td>
-                  <td>{{ item.on_hand }}</td>
-                  <td>{{ item.forecast }}</td>
-                  <td>{{ item.to_order }}</td>
+                  <td>{{ item.nombre }}</td>
+                  <td>{{ item.ubicacion }}</td>
+                  <td>{{ "%.2f"|format(item.en_stock) }}</td>
+                  <td>{{ "%.2f"|format(item.prevision) }}</td>
+                  <td>{{ "%.2f"|format(item.a_pedir) }}</td>
+                  <td>
+                    <form method="POST" action="{{ url_for('eliminar_producto', producto_id=item.id) }}"
+                      onsubmit="return confirm('¿Eliminar el producto {{ item.nombre }}?');">
+                      <button type="submit" class="btn btn-sm"
+                        style="background: rgba(255,80,80,0.25); border: 1px solid rgba(255,100,100,0.4); color: #ffaaaa; border-radius: 6px;">
+                        Eliminar
+                      </button>
+                    </form>
+                  </td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -52,6 +76,57 @@
 
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Añadir Producto -->
+<div class="modal fade" id="modalAñadirProducto" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg"
+      style="background: #3a1850; color: #fff; border: 1px solid rgba(255,255,255,0.20);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" id="modalLabel">Añadir producto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('añadir_producto') }}">
+        <div class="modal-body pt-3">
+          <div class="mb-3">
+            <label class="form-label small text-white-50">Nombre del producto *</label>
+            <input type="text" name="nombre" class="form-control bg-transparent text-white border-secondary"
+              placeholder="Ej: [FURN_1234] Escritorio" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small text-white-50">Ubicación</label>
+            <input type="text" name="ubicacion" class="form-control bg-transparent text-white border-secondary"
+              placeholder="WH/Stock" value="WH/Stock">
+          </div>
+          <div class="row g-3">
+            <div class="col-4">
+              <label class="form-label small text-white-50">En stock</label>
+              <input type="number" step="0.01" name="en_stock" class="form-control bg-transparent text-white border-secondary"
+                value="0">
+            </div>
+            <div class="col-4">
+              <label class="form-label small text-white-50">Previsión</label>
+              <input type="number" step="0.01" name="prevision" class="form-control bg-transparent text-white border-secondary"
+                value="0">
+            </div>
+            <div class="col-4">
+              <label class="form-label small text-white-50">A pedir</label>
+              <input type="number" step="0.01" name="a_pedir" class="form-control bg-transparent text-white border-secondary"
+                value="0">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-sm fw-semibold px-4"
+            style="background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); color: #fff;">
+            Guardar
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
