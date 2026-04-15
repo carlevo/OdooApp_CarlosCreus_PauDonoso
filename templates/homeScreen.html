@@ -62,6 +62,11 @@
     background: rgba(255,255,255,0.28);
   }
 
+  /* ── Avatar + Dropdown ── */
+  .o-avatar-wrap {
+    position: relative;
+  }
+
   .o-avatar {
     width: 32px;
     height: 32px;
@@ -75,6 +80,62 @@
     justify-content: center;
     cursor: pointer;
     border: 2px solid rgba(255,255,255,0.4);
+    user-select: none;
+    transition: border-color 0.15s;
+  }
+
+  .o-avatar:hover {
+    border-color: rgba(255,255,255,0.7);
+  }
+
+  .o-avatar-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    padding: 6px 0;
+    z-index: 200;
+    animation: dropdownFadeIn 0.15s ease;
+  }
+
+  .o-avatar-dropdown.open {
+    display: block;
+  }
+
+  @keyframes dropdownFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .o-avatar-dropdown .o-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    color: #4a2060;
+    text-decoration: none;
+    transition: background 0.12s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .o-avatar-dropdown .o-dropdown-item:hover {
+    background: #f3edf5;
+  }
+
+  .o-avatar-dropdown .o-dropdown-item svg {
+    width: 16px;
+    height: 16px;
+    fill: #875A7B;
+    flex-shrink: 0;
   }
 
   /* ── Main launcher area ── */
@@ -208,8 +269,19 @@
         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
       </svg>
     </button>
-    <!-- User avatar -->
-    <div class="o-avatar" title="Perfil">CC</div>
+    <!-- User avatar with dropdown -->
+    <div class="o-avatar-wrap">
+      <div class="o-avatar" id="avatarBtn" title="Perfil">CC</div>
+      <div class="o-avatar-dropdown" id="avatarDropdown">
+        <a href="/logout" class="o-dropdown-item">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <path d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
+            <path d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+          </svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -229,7 +301,7 @@
   <div class="o-app-grid">
 
     <!-- Inventario app tile -->
-    <a href="#" class="o-app-tile">
+    <a href="/aplicacion" class="o-app-tile">
       <div class="o-app-icon">
         <!-- Inventory / warehouse icon -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -241,4 +313,19 @@
 
   </div>
 </div>
+
+<script>
+  const avatarBtn = document.getElementById('avatarBtn');
+  const avatarDropdown = document.getElementById('avatarDropdown');
+
+  avatarBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    avatarDropdown.classList.toggle('open');
+  });
+
+  // Cerrar el dropdown al hacer clic fuera
+  document.addEventListener('click', function () {
+    avatarDropdown.classList.remove('open');
+  });
+</script>
 {% endblock %}
