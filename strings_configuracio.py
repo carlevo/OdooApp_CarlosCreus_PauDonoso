@@ -11,11 +11,11 @@ class StringsConfiguracio:
     #   password, ni la part del final del nom de la base de dades.
     #   El que s'ha de posar en el camp "Host name/address" és:
     #      dpg-d6k5s67pm1nc73e0df5g-a.frankfurt-postgres.render.com
-    nom_usuari = "flaskpostgres2625_user"
-    password_usuari = "gzdWUsQkiQ4bmGG8oOCViTVMnb3TRWb5"
-    uri_host = "dpg-d6tc6sh4tr6s739h4st0-a.frankfurt-postgres.render.com"
+    nom_usuari = "flask_postgres_carlos_pau_user"
+    password_usuari = "TEUDUS3iRwfWUW1NLUe883fD7hpQmcKp"
+    uri_host = "dpg-d7b7d24hg0os73aapfug-a.frankfurt-postgres.render.com"
     port = "5432"
-    nom_bd = "flaskpostgres2625"
+    nom_bd = "flask_postgres_carlos_pau"
 
     url_bd_online = f"postgresql://{nom_usuari}:{password_usuari}@{uri_host}:{port}/{nom_bd}?sslmode=require"
     # sslmode=require:
