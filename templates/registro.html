@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block contingut %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4 text-primary">Bienvenid@ a Odoo</h2>
+                    <h3 class="text-center mb-4 text-muted">Crear cuenta</h3>
+
+                    <form action="/registro" method="POST">
+                        <!-- Campo Nombre -->
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control form-control-lg" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+                        </div>
+
+                        <!-- Campo Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">Correo Electrónico</label>
+                            <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="nombre@ejemplo.com" required>
+                            <div id="emailHelp" class="form-text">No compartiremos tu correo con nadie más.</div>
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label fw-bold">Contraseña</label>
+                            <input type="password" class="form-control form-control-lg" id="password" name="password" required>
+                        </div>
+
+                        <!-- Confirmar Contraseña -->
+                        <div class="mb-4">
+                            <label for="password2" class="form-label fw-bold">Confirmar Contraseña</label>
+                            <input type="password" class="form-control form-control-lg" id="password2" name="password2" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Registrarse</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <p class="mb-2">¿Ya tienes cuenta?</p>
+                        <a href="/login" class="btn btn-outline-secondary">Iniciar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
