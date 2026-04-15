@@ -1,5 +1,244 @@
 {% extends "base.html" %}
 
 {% block contingut %}
-<p>HomeScreen - pròximament</p>
+<style>
+  /* ── Reset container padding from base.html ── */
+  .container-fluid {
+    padding: 0 !important;
+  }
+
+  /* ── Top navbar ── */
+  .o-navbar {
+    background-color: #875A7B;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  }
+
+  .o-navbar .o-logo {
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #fff;
+    letter-spacing: 1px;
+    user-select: none;
+  }
+
+  .o-navbar .o-logo span {
+    opacity: 0.75;
+    font-weight: 400;
+  }
+
+  .o-navbar .o-nav-icons {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .o-navbar .o-nav-icons .o-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.15s;
+  }
+
+  .o-navbar .o-nav-icons .o-icon-btn:hover {
+    background: rgba(255,255,255,0.28);
+  }
+
+  .o-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #d4b8e0;
+    color: #875A7B;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+
+  /* ── Main launcher area ── */
+  .o-home {
+    min-height: 100vh;
+    padding-top: 46px;
+    background-color: #f3edf5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 40px;
+  }
+
+  /* ── Search bar ── */
+  .o-search-wrap {
+    margin-top: 36px;
+    margin-bottom: 40px;
+    width: 380px;
+  }
+
+  .o-search {
+    width: 100%;
+    height: 36px;
+    border-radius: 18px;
+    border: none;
+    background: rgba(255,255,255,0.75);
+    box-shadow: 0 1px 4px rgba(113,75,103,0.15);
+    padding: 0 16px 0 36px;
+    font-size: 0.88rem;
+    color: #4a2060;
+    outline: none;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+
+  .o-search::placeholder { color: #a988b8; }
+
+  .o-search:focus {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(113,75,103,0.22);
+  }
+
+  .o-search-wrap .o-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a988b8;
+    font-size: 0.85rem;
+    pointer-events: none;
+  }
+
+  .o-search-container {
+    position: relative;
+  }
+
+  /* ── App grid ── */
+  .o-app-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 0 0 48px;
+    width: 100%;
+  }
+
+  /* ── Single app tile ── */
+  .o-app-tile {
+    width: 108px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 10px 6px 12px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .o-app-tile:hover {
+    background: rgba(135, 90, 123, 0.12);
+  }
+
+  .o-app-tile:hover .o-app-icon {
+    transform: scale(1.06);
+    box-shadow: 0 6px 18px rgba(113,75,103,0.35);
+  }
+
+  .o-app-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #9b6b8e, #714b67);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(113,75,103,0.30);
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-bottom: 10px;
+  }
+
+  .o-app-icon svg {
+    width: 36px;
+    height: 36px;
+    fill: #fff;
+  }
+
+  .o-app-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4a2060;
+    text-align: center;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+  }
+</style>
+
+<!-- ── Top Navigation Bar ── -->
+<nav class="o-navbar">
+  <div class="o-logo">Odoo <span>App</span></div>
+  <div class="o-nav-icons">
+    <!-- Chat icon -->
+    <button class="o-icon-btn" title="Missatges">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M2.678 11.894a1 1 0 0 1 .287.801 11 11 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8 8 0 0 0 8 14c3.996 0 7-2.807 7-6s-3.004-6-7-6-7 2.808-7 6c0 1.468.617 2.83 1.678 3.894"/>
+      </svg>
+    </button>
+    <!-- Activity icon -->
+    <button class="o-icon-btn" title="Activitats">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+      </svg>
+    </button>
+    <!-- User avatar -->
+    <div class="o-avatar" title="Perfil">CC</div>
+  </div>
+</nav>
+
+<!-- ── Launcher / Home ── -->
+<div class="o-home">
+  <!-- Search bar -->
+  <div class="o-search-wrap">
+    <div class="o-search-container">
+      <svg class="o-search-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.099zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11"/>
+      </svg>
+      <input class="o-search" type="text" placeholder="Cerca una aplicació…" />
+    </div>
+  </div>
+
+  <!-- App grid -->
+  <div class="o-app-grid">
+
+    <!-- Inventario app tile -->
+    <a href="#" class="o-app-tile">
+      <div class="o-app-icon">
+        <!-- Inventory / warehouse icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M20 7H4C2.9 7 2 7.9 2 9v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm0 12H4V9h16v10zM12 1L2 6h20L12 1zm-3 9h6v2H9v-2zm0 4h6v2H9v-2z"/>
+        </svg>
+      </div>
+      <span class="o-app-name">Inventario</span>
+    </a>
+
+  </div>
+</div>
 {% endblock %}
